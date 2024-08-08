@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="initial-scale=1">
+	<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+	<title>Calculating device properties</title>
+	
+	<style type="text/css">
+	
+	body {
+		background-color: black;
+		color: white;
+	}
+	
+	</style>
+</head>
+<body id="body">
+
+<h1>Loading Please Wait...</h1>
+
+<div id="debug">
+
+</div>
+
+
+<script type="text/javascript">
+
+function iOSversion() {
+
+  if (/iPad|iPhone|iPod/.test(navigator.userAgent.toLowerCase()) && !window.MSStream) {
+    if (!!window.indexedDB) { return 'iOS 8 and up'; }
+    if (!!window.SpeechSynthesisUtterance) { return 'iOS 7'; }
+    if (!!window.webkitAudioContext) { return 'iOS 6'; }
+    if (!!window.matchMedia) { return 'iOS 5'; }
+    if (!!window.history && 'pushState' in window.history) { return 'iOS 4'; }
+    return 'iOS 3 or earlier';
+  }
+  var userAgent = navigator.userAgent.toLowerCase(); 
+  var Android = userAgent.indexOf("android") > -1; 
+  if(Android) {
+	return "Android"
+  }
+
+  return 'Not an iOS device';
+}
+
+function readDeviceOrientation() {
+
+    switch (window.orientation) {  
+    case 0:  
+		return "Portrait";
+        // Portrait 
+        break; 
+        
+    case 180:  
+		return "Portrait";
+        // Portrait (Upside-down)
+        break; 
+  
+    case -90:  
+		return "Landscape";
+        // Landscape (Clockwise)
+        break;  
+  
+    case 90:  
+		return "Landscape";
+        // Landscape  (Counterclockwise)
+        break;
+    }
+	
+	return false;
+	
+}
+
+$(document).ready(function(){
+
+	gameName = 'arcadebuilder'
+	
+	w = screen.width
+	h = screen.height
+	p = navigator.platform
+	ua = navigator.userAgent.toLowerCase();
+	v = iOSversion();
+	o = readDeviceOrientation();
+	r = window.devicePixelRatio;
+	ih = window.innerHeight;
+	iw = window.innerWidth;
+	
+	device = "Not found";
+	vendor = "Not Found";
+	
+	if(p=='iPad') {
+		device = "Tablet"
+		vendor = "Apple"
+	}
+	
+	if(p=='MacIntel') {
+	
+		//Apple device
+	
+		if(o==false) {
+			//desktop
+			device = "Desktop";
+			vendor = "Apple"
+			
+		} else {
+			//tablet
+			device = "Tablet";
+			vendor = "Apple"
+		}
+	
+	}
+	
+	if(p=='iPhone') {
+		//iPhone
+		
+		device = "Tablet";
+		vendor = "Apple"
+		
+	}
+	
+	if(p=="Win32") {
+	
+		//Windows Device
+	
+		if(o !== false) {
+		
+			device = "Tablet";
+			vendor = "Windows"
+		
+		} else {
+		
+			device = "Desktop";
+			vendor = "Windows"
+		
+		}
+	
+	}
+	
+	if(p !== "Win32" && p !== "iPhone" && p !== "MacIntel" && p !== "iPad") {
+	
+		//Linux Device
+		if(v == "Android") {
+			//Android
+			device = "Tablet"
+			vendor = "Google"
+		} else {
+			//Linux?
+			device = "Desktop"
+			vendor = "Open"
+		}
+		
+	
+	}
+
+	$("#debug").append("<h4>Calculating</h4>");
+	
+	$("#debug").append("<br />ua: "+ua);
+	$("#debug").append("<br />w: "+w);
+	$("#debug").append("<br />h: "+h);
+	$("#debug").append("<br />ih: "+ih);
+	$("#debug").append("<br />iw: "+iw);
+	$("#debug").append("<br />p: "+p);
+	$("#debug").append("<br />v: "+v);
+	$("#debug").append("<br />o: "+o);
+	$("#debug").append("<br />r: "+r);
+	$("#debug").append("<br />appName: "+navigator.appName);
+
+	
+	
+	$("#debug").append("<br />Device: "+device);
+	$("#debug").append("<br />Vendor: "+vendor);
+	
+	gotoPage = gameName+".html";
+	
+	if(device === "desktop") {
+		//Normal page
+		$("#debug").append("<br />Forward to normal page");	
+		gotoPage = gameName+".html";
+	}
+	
+	var size = 'default';
+	
+	if(device === "Tablet") {
+	
+		if(vendor === "Apple") {
+			//iOS device
+			if(w<360) {
+				//Small device
+				size = 'supertiny';
+				gotoPage = gameName+"-supertiny.html";
+			} else if(w<600) {
+				//Small device
+				size = 'tiny';
+				gotoPage = gameName+"-tiny.html";
+			} else if(w<760) {
+					//Small device
+					size = 'small';
+					gotoPage = gameName+"-small.html";
+				}  else {
+					//Big device
+					gotoPage = gameName+".html";
+				}//Big device
+				
+		} else {
+			//None iOS device
+			if(o == "Landscape") {
+				//Landscape
+				//Portrait
+				if(w<360) {
+					//Small device
+					size = 'supertiny';
+					gotoPage = gameName+"-supertiny.html";
+				} else if(h<600) {
+					//Small device
+					size = 'tiny';
+					gotoPage = gameName+"-tiny.html";
+				} else if(h<760) {
+					//Small device
+					size = 'small';
+					gotoPage = gameName+"-small.html";
+				} else {
+					//Big device
+					gotoPage = gameName+".html";
+				}
+			} else {
+				//Portrait
+				if(w<360) {
+					//Small device
+					size = 'supertiny';
+					gotoPage = gameName+"-supertiny.html";
+				} else if(w<600) {
+					//Small device
+					size = 'tiny';
+					gotoPage = gameName+"-tiny.html";
+					
+				} else if(w<760) {
+					//Small device
+					size = 'small';
+					gotoPage = gameName+"-small.html";
+				} else {
+					//Big device
+					gotoPage = gameName+".html";
+				}
+			}
+		}
+	}
+	//gotoPage = gameName+".html?size="+size;
+	$("#debug").append("<br />Go to:" + gotoPage);	
+	window.location = gotoPage;
+	
+	
+	
+});
+
+
+
+
+</script>
+
+<!-- 
+
+
+ss_desktopDesktops & Laptops
+1024�768 pixels or higher
+
+ 
+
+ss_appleApple Products
+Pixel Size	Viewport
+iPhone		
+iPhone XR	828 x 1792	414 x 896
+iPhone XS	1125 x 2436	375 x 812
+iPhone XS Max	1242 x 2688	414 x 896
+iPhone X	1125 x 2436	375 x 812
+iPhone 8 Plus	1080 x 1920	414 x 736
+iPhone 8	750 x 1334	375 x 667
+iPhone 7 Plus	1080 x 1920	414 x 736
+iPhone 7	750 x 1334	375 x 667
+iPhone 6 Plus/6S Plus	1080 x 1920	414 x 736
+iPhone 6/6S	750 x 1334	375 x 667
+iPhone 5	640 x 1136	320 x 568
+iPod		
+iPod Touch	640 x 1136	320 x 568
+iPad		
+iPad Pro	2048 x 2732	1024 x 1366
+iPad Third & Fourth Generation	1536 x 2048	768 x 1024
+iPad Air 1 & 2	1536 x 2048	768 x 1024
+iPad Mini 2 & 3	1536 x 2048	768 x 1024
+iPad Mini	768 x 1024	768 x 1024
+ 
+
+ss_androidAndroid Devices
+Pixel Size	Viewport
+Phones		
+Nexus 6P	1440 x 2560	412 x 732
+Nexus 5X	1080 x 1920	412 x 732
+Google Pixel 3 XL	1440 x 2960	412 x 847
+Google Pixel 3	1080 x 2160	412 x 824
+Google Pixel 2 XL	1440 x 2560	412 x 732
+Google Pixel XL	1440 x 2560	412 x 732
+Google Pixel	1080 x 1920	412 x 732
+Samsung Galaxy Note 9	1440 x 2960	360 x 740
+Samsung Galaxy Note 5	1440 x 2560	480 x 853
+LG G5	1440 x 2560	480 x 853
+One Plus 3	1080 x 1920	480 x 853
+Samsung Galaxy S9+	1440 x 2960	360 x 740
+Samsung Galaxy S9	1440 x 2960	360 x 740
+Samsung Galaxy S8+	1440 x 2960	360 x 740
+Samsung Galaxy S8	1440 x 2960	360 x 740
+Samsung Galaxy S7 Edge	1440 x 2560	360 x 640
+Samsung Galaxy S7	1440 x 2560	360 x 640
+Tablets		
+Nexus 9	1536 x 2048	768 x 1024
+Nexus 7 (2013)	1200 x 1920	600 x 960
+Samsung Galaxy Tab 10	800 x 1280	800 x 1280
+Chromebook Pixel	2560 x 1700	1280 x 850
+Got anymore tips or suggestions on how to handle different screen sizes and resolutions? Share with us on Facebook!
+
+-->
+
+</body>
+</html>
